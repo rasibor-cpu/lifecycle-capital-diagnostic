@@ -3,58 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lifecycle Capital Diagnostic</title>
+<title>Lifecycle Capital Advisory</title>
 
 <style>
 body {
     font-family: Arial, sans-serif;
-    background:#f5f6f8;
+    background:#f4f5f7;
     max-width:900px;
     margin:40px auto;
     padding:20px;
+    color:#111;
 }
-h1 { font-size:26px; }
+h1 { font-size:28px; margin-bottom:5px; }
+.subhead { font-size:15px; margin-bottom:3px; }
+.muted { font-size:13px; color:gray; }
+
 .card {
     background:white;
-    padding:20px;
-    margin-bottom:20px;
+    padding:25px;
+    margin-top:25px;
     border-radius:8px;
     border:1px solid #ddd;
 }
+
 label {
     font-weight:bold;
     display:block;
-    margin-top:15px;
+    margin-top:18px;
 }
+
 select, input {
     width:100%;
-    padding:8px;
+    padding:9px;
     margin-top:5px;
+    font-size:14px;
 }
+
 button {
-    margin-top:20px;
-    padding:10px 15px;
+    margin-top:25px;
+    padding:12px 18px;
     background:black;
     color:white;
     border:none;
     cursor:pointer;
+    font-size:15px;
 }
+
+button:hover { opacity:0.9; }
+
 .result {
-    background:#fff;
-    padding:20px;
+    background:#ffffff;
+    padding:25px;
     border:1px solid #ccc;
-    margin-top:20px;
+    margin-top:30px;
+    border-radius:8px;
 }
+
 .hidden { display:none; }
+
+.footer {
+    margin-top:50px;
+    font-size:12px;
+    color:gray;
+}
 </style>
 </head>
 
 <body>
 
-<h1>Lifecycle Capital Diagnostic</h1>
-<p>Confidential Executive Assessment</p>
+<h1>Lifecycle Capital Advisory</h1>
+<div class="subhead"><strong>A Capital Strata Systems Framework</strong></div>
+<div class="subhead">Asibor R. | Strategic Wealth & Influence</div>
+<div class="muted">Confidential Executive Capital Structuring Assessment</div>
 
 <div class="card">
+
 <label>Client Name</label>
 <input id="name">
 
@@ -65,18 +88,18 @@ button {
 <option value="P">Declining</option>
 </select>
 
-<label>Dependents</label>
+<label>Dependents / Structural Obligations</label>
 <select id="dependents">
 <option value="V">Low</option>
 <option value="A">Moderate</option>
 <option value="P">High</option>
 </select>
 
-<label>Primary Objective</label>
+<label>Primary Capital Objective</label>
 <select id="objective">
-<option value="V">Growth</option>
-<option value="A">Balance</option>
-<option value="P">Preservation</option>
+<option value="V">Growth Acceleration</option>
+<option value="A">Structural Balance</option>
+<option value="P">Preservation & Stability</option>
 </select>
 
 <label>Liquidity Buffer</label>
@@ -86,53 +109,57 @@ button {
 <option value="0">6+ months</option>
 </select>
 
-<label>Concentration >35%</label>
+<label>Asset Concentration >35%</label>
 <select id="concentration">
 <option value="2">Yes</option>
-<option value="1">Somewhat</option>
+<option value="1">Partially</option>
 <option value="0">No</option>
 </select>
 
-<label>Defined Drawdown Limit?</label>
+<label>Defined Maximum Drawdown Limit?</label>
 <select id="drawdown">
 <option value="2">No</option>
-<option value="1">Rough idea</option>
-<option value="0">Yes</option>
+<option value="1">General idea only</option>
+<option value="0">Yes, defined and monitored</option>
 </select>
 
-<label>Debt Fragility</label>
+<label>Debt Fragility Under 20% Income Shock</label>
 <select id="debt">
-<option value="2">High risk if income falls</option>
+<option value="2">High vulnerability</option>
 <option value="1">Manageable</option>
 <option value="0">Low / None</option>
 </select>
 
-<label>Governance Rules</label>
+<label>Formal Capital Governance Rules</label>
 <select id="rules">
 <option value="2">None</option>
-<option value="1">Informal</option>
+<option value="1">Informal / unwritten</option>
 <option value="0">Written & reviewed</option>
 </select>
 
 <label>Lifestyle Elasticity</label>
 <select id="lifestyle">
-<option value="2">Low</option>
-<option value="1">Medium</option>
-<option value="0">High</option>
+<option value="2">Low flexibility</option>
+<option value="1">Moderate flexibility</option>
+<option value="0">High flexibility</option>
 </select>
 
-<button onclick="generate()">Generate Diagnostic</button>
+<button onclick="generate()">Generate Strategic Diagnostic</button>
 
 </div>
 
 <div id="output" class="result hidden"></div>
+
+<div class="footer">
+This diagnostic is a strategic capital structuring tool.  
+It does not constitute investment, tax, or legal advice.
+</div>
 
 <script>
 function generate() {
 
 let V=0, A=0, P=0;
 
-// Phase scoring
 ["income","dependents","objective"].forEach(id=>{
     let val = document.getElementById(id).value;
     if(val==="V") V++;
@@ -140,12 +167,11 @@ let V=0, A=0, P=0;
     if(val==="P") P++;
 });
 
-let phase="Transitional";
+let phase="Transitional Phase";
 if(V>A && V>P) phase="Velocity Phase";
 if(A>V && A>P) phase="Architecture Phase";
 if(P>V && P>A) phase="Protection Phase";
 
-// Misalignment score
 let mis =
 parseInt(document.getElementById("liquidity").value)+
 parseInt(document.getElementById("concentration").value)+
@@ -155,38 +181,42 @@ parseInt(document.getElementById("rules").value)+
 parseInt(document.getElementById("lifestyle").value);
 
 let misScore = Math.min(10, Math.round((mis/12)*10));
-let level = misScore<=3 ? "Aligned" :
-            misScore<=6 ? "Moderate Drift" :
-            "High Misalignment";
 
-// Action Plan Logic
+let level = misScore<=3 ? "Structurally Aligned" :
+            misScore<=6 ? "Moderate Structural Drift" :
+            "High Structural Misalignment";
+
 let actions = [];
+
 if(parseInt(document.getElementById("liquidity").value)>=1)
 actions.push("Increase liquidity buffer to minimum 3–6 months.");
+
 if(parseInt(document.getElementById("concentration").value)>=1)
-actions.push("Define and enforce concentration cap policy.");
+actions.push("Define and enforce asset concentration caps.");
+
 if(parseInt(document.getElementById("debt").value)>=1)
-actions.push("Map debt fragility and reduce risk exposure.");
+actions.push("Map debt fragility and reduce shock exposure.");
+
 if(parseInt(document.getElementById("rules").value)>=1)
-actions.push("Implement written governance rules.");
+actions.push("Implement written capital governance rules.");
+
 if(parseInt(document.getElementById("lifestyle").value)>=1)
-actions.push("Increase lifestyle elasticity.");
+actions.push("Increase lifestyle elasticity and fixed-cost resilience.");
 
 if(actions.length===0)
-actions.push("Maintain governance discipline and quarterly reviews.");
+actions.push("Maintain governance discipline with quarterly structural reviews.");
 
-// Output
 document.getElementById("output").classList.remove("hidden");
 document.getElementById("output").innerHTML = `
-<h2>Diagnostic Result</h2>
+<h2>Strategic Diagnostic Summary</h2>
 <p><strong>Lifecycle Phase:</strong> ${phase}</p>
 <p><strong>Misalignment Index:</strong> ${misScore}/10</p>
-<p><strong>Risk Level:</strong> ${level}</p>
+<p><strong>Structural Risk Assessment:</strong> ${level}</p>
 
-<h3>Immediate Focus</h3>
+<h3>Priority Focus Areas</h3>
 <ul>${actions.map(a=>"<li>"+a+"</li>").join("")}</ul>
 
-<p><em>Strategic realignment recommended within 30–90 days.</em></p>
+<p><em>Recommended structural realignment window: 30–90 days.</em></p>
 `;
 
 }
