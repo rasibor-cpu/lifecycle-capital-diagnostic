@@ -28,20 +28,11 @@ body {
     margin-bottom:25px;
 }
 
-h1 {
-    font-size:26px;
-    margin-bottom:5px;
-}
+h1 { font-size:26px; margin-bottom:5px; }
 
-.subhead {
-    font-size:15px;
-    margin-bottom:3px;
-}
+.subhead { font-size:15px; margin-bottom:3px; }
 
-.muted {
-    font-size:13px;
-    color:gray;
-}
+.muted { font-size:13px; color:gray; }
 
 .card {
     background:white;
@@ -51,11 +42,7 @@ h1 {
     border:1px solid #ddd;
 }
 
-label {
-    font-weight:bold;
-    display:block;
-    margin-top:18px;
-}
+label { font-weight:bold; display:block; margin-top:18px; }
 
 select, input {
     width:100%;
@@ -64,18 +51,28 @@ select, input {
     font-size:14px;
 }
 
-button {
+.btnrow {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
     margin-top:25px;
+}
+
+button {
     padding:12px 18px;
     background:black;
     color:white;
     border:none;
     cursor:pointer;
     font-size:15px;
+    border-radius:6px;
 }
+button:hover { opacity:0.9; }
 
-button:hover {
-    opacity:0.9;
+button.secondary{
+    background:#ffffff;
+    color:#111;
+    border:1px solid #ccc;
 }
 
 .result {
@@ -93,6 +90,13 @@ button:hover {
     font-size:12px;
     color:gray;
 }
+
+/* Print styling */
+@media print {
+  body { background:#fff; margin:0; max-width:none; }
+  .card, .footer, .btnrow { display:none; }
+  .result { border:none; margin:0; border-radius:0; }
+}
 </style>
 </head>
 
@@ -109,7 +113,7 @@ button:hover {
 <div class="card">
 
 <label>Client Name</label>
-<input id="name">
+<input id="name" placeholder="Enter client name">
 
 <label>Income Trend</label>
 <select id="income">
@@ -174,7 +178,10 @@ button:hover {
 <option value="0">High flexibility</option>
 </select>
 
-<button onclick="generate()">Generate Strategic Diagnostic</button>
+<div class="btnrow">
+  <button onclick="generate()">Generate Strategic Diagnostic</button>
+  <button class="secondary" onclick="resetForm()">Reset</button>
+</div>
 
 </div>
 
@@ -186,6 +193,23 @@ It does not constitute investment, tax, or legal advice.
 </div>
 
 <script>
+function resetForm(){
+  document.getElementById("name").value = "";
+  ["income","dependents","objective","liquidity","concentration","drawdown","debt","rules","lifestyle"].forEach(id=>{
+    document.getElementById(id).selectedIndex = 0;
+  });
+  document.getElementById("output").classList.add("hidden");
+  document.getElementById("output").innerHTML = "";
+}
+
+function _today(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
 function generate() {
 
 let V=0, A=0, P=0;
@@ -236,19 +260,53 @@ actions.push("Increase lifestyle elasticity and fixed-cost resilience.");
 if(actions.length===0)
 actions.push("Maintain governance discipline with quarterly structural reviews.");
 
+const client = (document.getElementById("name").value || "Client").trim();
+const date = _today();
+
 document.getElementById("output").classList.remove("hidden");
 document.getElementById("output").innerHTML = `
-<h2>Strategic Diagnostic Summary</h2>
-<p><strong>Lifecycle Phase:</strong> ${phase}</p>
-<p><strong>Misalignment Index:</strong> ${misScore}/10</p>
-<p><strong>Structural Risk Assessment:</strong> ${level}</p>
+  <div style="border-bottom:1px solid #ddd;padding-bottom:12px;margin-bottom:14px;">
+    <div style="font-weight:bold;letter-spacing:1px;">CAPITAL STRATA SYSTEMS</div>
+    <div style="color:#666;font-size:13px;">Governance-Driven Capital Infrastructure</div>
+    <div style="margin-top:8px;font-size:18px;font-weight:bold;">Lifecycle Capital Advisory — Diagnostic Report</div>
+    <div style="color:#666;font-size:13px;margin-top:4px;">A Capital Strata Systems Framework • Asibor R. | Strategic Wealth & Influence</div>
+    <div style="color:#666;font-size:13px;margin-top:6px;"><b>Client:</b> ${client} &nbsp;|&nbsp; <b>Date:</b> ${date}</div>
+  </div>
 
-<h3>Priority Focus Areas</h3>
-<ul>${actions.map(a=>"<li>"+a+"</li>").join("")}</ul>
+  <h2 style="margin:0 0 10px 0;">Strategic Diagnostic Summary</h2>
+  <p><strong>Lifecycle Phase:</strong> ${phase}</p>
+  <p><strong>Misalignment Index:</strong> ${misScore}/10</p>
+  <p><strong>Structural Risk Assessment:</strong> ${level}</p>
 
-<p><em>Recommended structural realignment window: 30–90 days.</em></p>
+  <h3 style="margin-top:18px;">Priority Focus Areas</h3>
+  <ul>${actions.map(a=>"<li>"+a+"</li>").join("")}</ul>
+
+  <p style="margin-top:14px;"><em>Recommended structural realignment window: 30–90 days.</em></p>
+
+  <div class="btnrow" style="margin-top:18px;">
+    <button onclick="window.print()">Save as PDF</button>
+    <button class="secondary" onclick="downloadReportHTML()">Download Report (HTML)</button>
+  </div>
+
+  <div style="margin-top:16px;color:#666;font-size:12px;">
+    This report is a strategic structuring output. It is not investment, tax, or legal advice.
+  </div>
 `;
+}
 
+function downloadReportHTML(){
+  const el = document.getElementById("output");
+  const client = (document.getElementById("name").value || "client").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-");
+  const html = `
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lifecycle Capital Diagnostic Report</title></head><body>${el.innerHTML}</body></html>`;
+  const blob = new Blob([html], {type:"text/html"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `capital-diagnostic-report-${client}.html`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 </script>
 
